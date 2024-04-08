@@ -1,0 +1,280 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Auction Display</title>
+    <style>
+        body {
+            font-family: 'Arial', sans-serif;
+            margin: 0;
+            padding: 0;
+            background-color: #f4f4f4;
+        }
+
+        /* Styles for header */
+        .blog-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            background-color: #333;
+            padding: 20px 10px;
+            color: white;
+        }
+
+        .site-title {
+            font-weight: bold;
+            font-size: 2em;
+        }
+
+        .blog-subtitle {
+            font-size: 1.2em;
+            margin: 10px 0;
+        }
+
+        .user {
+            display: flex;
+            align-items: center;
+        }
+
+        .user img {
+            width: 50px;
+            border-radius: 50%;
+            margin-right: 10px;
+        }
+
+        /* Styles for navigation */
+        .blog-nav {
+            display: flex;
+            justify-content: center;
+            background-color: #444;
+            padding: 10px;
+        }
+
+        .nav-link {
+            color: white;
+            text-decoration: none;
+            margin: 0 15px;
+            font-weight: bold;
+        }
+
+        .nav-link:hover {
+            color: #ffd700;
+        }
+
+        .red {
+            color: red;
+        }
+
+        /* Auction item styles */
+        .container {
+            max-width: 800px;
+            min-height: 90vh;
+            margin: 20px auto;
+            background-color: #fff;
+            padding: 20px;
+            box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
+        }
+
+        h2 {
+            color: #333;
+            text-align: center;
+            font-size: 24px;
+            margin-bottom: 20px;
+        }
+
+        .auction-item img {
+            max-width: 100%;
+            height: auto;
+            border-radius: 5px;
+            margin: 0 auto 20px;
+            display: block;
+        }
+
+
+        .auction-item-info {
+            text-align: center;
+            width: 100%;
+        }
+
+        .auction-item-title {
+            font-size: 28px;
+            font-weight: bold;
+            text-align: center;
+            margin-bottom: 10px;
+        }
+
+        .auction-item-details {
+            font-size: 18px;
+            color: #666;
+            display: flex;
+            justify-content: space-between;
+        }
+
+        .owner-info {
+            font-size: 18px;
+            color: #555;
+            margin-top: 10px;
+        }
+
+        .bid-section {
+            text-align: center;
+            margin-top: 20px;
+        }
+
+        .bid-section input[type="number"] {
+            padding: 10px;
+            width: 200px;
+            font-size: 1em;
+            border: 1px solid #ccc;
+            margin-right: 10px;
+        }
+
+        .bid-section button {
+            padding: 10px 20px;
+            background-color: #4caf50;
+            color: white;
+            border: none;
+            cursor: pointer;
+            font-size: 1em;
+        }
+
+        .bid-section button:hover {
+            background-color: #45a049;
+        }
+    </style>
+</head>
+
+<body>
+    <header class="blog-header">
+        <div class="site-title"><b class="hub">Auction</b>ify</div>
+        <div class="blog-subtitle">Discover Unique Items</div>
+        <div class="user">
+            <img src="https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcTlvcJSJgrLlqVEQ1XNM3GzT0qGSyBX5jg1nd5Xn7_krVmMVL3gXR5u6TaU1q8xS4FNV6k&usqp=CAU"
+                alt="Profile Picture">
+            <p id="user">Prashant Shinde</p>
+        </div>
+        <div class="logSign" onclick="log()">Log Out</div>
+    </header>
+
+    <nav class="blog-nav">
+        <a class="nav-link" onclick="window.location.href='/'">Home</a>
+        <a class="nav-link" onclick="window.location.href='/createPost'">Create Auction Entry</a>
+        <a class="nav-link" onclick="window.location.href='/about'">About</a>
+        <a class="nav-link" onclick="window.location.href='/contact'">Contact</a>
+        <a class="nav-link red logout" onclick="log()">Log Out</a>
+    </nav>
+
+    <div class="container">
+        <h2>Selected Auction Item</h2>
+
+        <div id="auctionItems" class="auction-item">
+            <img id="itemImage" src="" alt="Auction Item">
+            <div class="auction-item-info">
+                <div id="title" class="auction-item-title"></div>
+                <div id="details" class="auction-item-details">
+                    <p id="endDate">Last Date: </p>
+                    <p id="startingPrice">Starting Price: </p>
+                </div>
+                <div id="highestBidInfo" class="auction-item-details">
+                    <p id="highestBidderName">Highest Bidder: </p>
+                    <p id="highestBidAmount">Highest Bid: </p>
+                </div>
+                <div id="owner" class="owner-info">Owner: </div>
+            </div>
+        </div>
+        <hr>
+        <div class="bid-section">
+            <input type="number" id="bidAmount" placeholder="Enter Bid Amount" required>
+            <button onclick="Bid()">Bid</button>
+        </div>
+    </div>
+
+    <script>
+        document.addEventListener('DOMContentLoaded', function () {
+            fetchAuctionItem();
+            readuser();
+        });
+        var data;
+
+        function log() {
+            if (localStorage.getItem("username")) {
+                localStorage.removeItem('mail');
+                localStorage.removeItem('user');
+                window.location.href = '/login';
+            } else {
+                window.location.href = '/login';
+            }
+        }
+        async function Bid() {
+            const urlqueries = new URLSearchParams(window.location.search);
+            const response = await fetch('/displayItem?id=' + urlqueries.get('id'));
+            item = await response.json();
+            submitBid(item);
+        }
+        function readuser() {
+            const username = localStorage.getItem("user");
+
+            if (username) {
+                document.querySelector(".user").style.display = "flex";
+                document.getElementById("user").innerText = username;
+            } else {
+                document.querySelector(".logSign").style.display = "block";
+                document.querySelector(".logout").innerText = "Log In";
+            }
+        }
+
+        async function fetchAuctionItem() {
+            try {
+                const urlqueries = new URLSearchParams(window.location.search);
+                const response = await fetch('/displayItem?id=' + urlqueries.get('id'));
+                data = await response.json();
+                renderAuctionItem(data);
+            } catch (error) {
+                console.error('Error fetching auction item:', error);
+            }
+        }
+
+        function renderAuctionItem(item) {
+            document.getElementById("itemImage").src = item.imageUrl;
+            document.getElementById("title").textContent = item.Title;
+            document.getElementById("endDate").textContent = `Last Date: ${item.lastDate}`;
+            document.getElementById("startingPrice").textContent = `Starting Price: ₹${item.startAmount}`;
+            document.getElementById("highestBidAmount").textContent = `Highest Bid: ₹${item.highestBid}`;
+            document.getElementById("highestBidderName").textContent = `Highest Bidder: ${item.highestBidder}`;
+            document.getElementById("owner").textContent = `Owner: ${item.owner}`;
+        }
+
+        async function submitBid(item) {
+            const bidAmount = document.getElementById('bidAmount').value;
+            if (bidAmount > item.highestBid) {
+                try {
+                    const urlqueries = new URLSearchParams(window.location.search);
+                    const response = await fetch('/addBid', {
+                        method: 'POST',
+                        headers: {
+                            'Content-Type': 'application/json'
+                        },
+                        body: JSON.stringify({ id: urlqueries.get('id'), highestBid: bidAmount, highestBidder: `${localStorage.getItem('user')}(${localStorage.getItem('mail')})` })
+                    });
+                    if (response.status) {
+                        alert('Bid Added successfully')
+                        document.getElementById('bidAmount').value = '';
+                        window.location.reload();
+                    } else {
+                        alert('Bid not added');
+                    }
+                } catch (error) {
+                    console.error('Error submitting bid:', error);
+                }
+            } else {
+                alert('Please enter a valid bid amount');
+            }
+
+
+        }
+    </script>
+</body>
+
+</html>

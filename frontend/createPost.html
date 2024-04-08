@@ -1,0 +1,243 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Create Post</title>
+    <style>
+        body {
+            font-family: 'Arial', sans-serif;
+            margin: 0;
+            padding: 0;
+            background-color: #f4f4f4;
+        }
+
+        .container {
+            max-width: 800px;
+            margin: 20px auto;
+            background-color: #fff;
+            padding: 20px;
+            box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
+        }
+
+        form {
+            display: grid;
+            gap: 15px;
+        }
+
+        label {
+            font-weight: bold;
+        }
+
+        input,
+        textarea {
+            width: 100%;
+            padding: 8px;
+            box-sizing: border-box;
+        }
+
+        button {
+            background-color: #007bff;
+            color: #fff;
+            padding: 10px;
+            cursor: pointer;
+            border: none;
+        }
+
+        button:hover {
+            background-color: #0056b3;
+        }
+
+        #user,
+        #mail {
+            visibility: collapse;
+        }
+
+        label {
+            font-size: 1.2em;
+            margin-right: 10px;
+        }
+
+        select {
+            padding: 10px;
+            font-size: 1em;
+            border: 1px solid #ccc;
+            border-radius: 4px;
+            background-color: #fff;
+            color: #000000;
+            cursor: pointer;
+        }
+
+
+        select:focus {
+            outline: none;
+            border-color: orange;
+            box-shadow: orange;
+        }
+
+        option {
+            background-color: #fff;
+            color: #333;
+        }
+
+
+        /* header css */
+        .blog-header {
+            display: flex;
+            text-align: center;
+            flex-wrap: wrap;
+            justify-content: space-around;
+            align-items: center;
+            background-color: #333;
+            padding: 20px 10px;
+            text-align: center;
+            color: white;
+        }
+
+        .site-title {
+            margin: 0;
+            font-weight: bold;
+            font-size: 2em;
+            color: white;
+        }
+
+        .blog-subtitle {
+            margin: 10px 0;
+            font-size: 1.2em;
+        }
+
+        .blog-nav {
+            display: flex;
+            justify-content: center;
+            background-color: #444;
+            padding: 10px;
+        }
+
+        .nav-link {
+            color: white;
+            text-decoration: none;
+            margin: 0 15px;
+            font-weight: bold;
+        }
+
+        .nav-link:hover {
+            color: #ffd700;
+
+        }
+
+        .red {
+            color: red;
+        }
+
+
+        .middle {
+            display: inline-block;
+        }
+
+        .hub {
+            color: black;
+            background-color: orange;
+            border-radius: 2px;
+            padding: 2px;
+        }
+
+        .logSign {
+            display: none;
+            color: orange;
+            font-size: min(2em, 5vw);
+            width: fit-content;
+            cursor: pointer;
+        }
+
+        #profileimg {
+            width: 50px;
+        }
+
+        .user {
+            display: none;
+            align-items: center;
+            color: orange;
+            font-size: min(2em, 5vw);
+            cursor: pointer;
+        }
+    </style>
+</head>
+
+<body>
+    <header class="blog-header">
+        <div class="site-title"><b class="hub">Virtual</b> Auction</div>
+        <div class="blog-subtitle">Discover Unique Items</div>
+        <div class="user">
+            <img src="https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcTlvcJSJgrLlqVEQ1XNM3GzT0qGSyBX5jg1nd5Xn7_krVmMVL3gXR5u6TaU1q8xS4FNV6k&usqp=CAU"
+                alt="Profile Picture">
+            <p id="user">Not Logged In</p>
+        </div>
+        <div class="logSign" onclick="log()">Log Out</div>
+    </header>
+
+    <nav class="blog-nav">
+        <a class="nav-link" onclick="window.location.href='/'">Home</a>
+        <a class="nav-link" onclick="window.location.href='/about'">About</a>
+        <a class="nav-link" onclick="window.location.href='/contact'">Contact</a>
+        <a class="nav-link red logout" onclick="log()">Log Out</a>
+    </nav>
+
+    <div class="container">
+        <h2>New Auction Entry</h2>
+
+        <form id="postForm" action="/createPost" method="post">
+            <label for="Title">Title:</label>
+            <input type="text" id="Title" name="Title" required>
+
+            <label for="imageUrl">Image URL:</label>
+            <input type="text" id="imageUrl" name="imageUrl" required>
+
+            <label for="startAmount">Bid Starting Amount:</label>
+            <input type="text" id="startAmount" name="startAmount" required>
+
+            <label for="lastDate">Last Bidding Date:</label>
+            <input type="text" id="lastDate" name="lastDate" required>
+
+            
+
+
+            <button type="submit">Post Entry</button>
+            <input type="text" name="user" id="user">
+            <input type="text" name="mail" id="mail">
+        </form>
+    </div>
+    <script>
+        document.addEventListener("DOMContentLoaded",()=>{
+            if (localStorage.getItem("user")) {
+                document.getElementById("user").value = localStorage.getItem("user");
+                document.getElementById("mail").value = localStorage.getItem("mail");
+            } else {
+                alert("Please Login To Post a An Auction Entry");
+                window.location.href = "/login";
+            }
+        readuser();
+        });
+
+        function log() {
+            localStorage.removeItem("user");
+            localStorage.removeItem("mail");
+            window.location.href = "/login";
+        }
+
+        function readuser() {
+            const username = localStorage.getItem("user");
+
+            if (username) {
+                document.querySelector(".user").style.display = "flex";
+                document.getElementById("user").innerText = username;
+            } else {
+
+                alert('User Not Logged In Please Log In First');
+                window.location.href = '/login';
+            }
+        }
+    </script>
+</body>
+
+</html>

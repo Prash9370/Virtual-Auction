@@ -1,0 +1,212 @@
+
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Login - Virtual Auction</title>
+    <style>
+       body {
+            font-family: 'Arial', sans-serif;
+            margin: 0;
+            padding: 0;
+            background-color: #f4f4f4;
+        }
+
+        .container {
+            max-width: 400px;
+            margin: 50px auto;
+            background-color: #fff;
+            padding: 20px;
+            box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
+        }
+
+        h2 {
+            color: #333;
+            text-align: center;
+        }
+
+        form {
+            display: grid;
+            gap: 15px;
+        }
+
+        label {
+            font-weight: bold;
+        }
+
+        input {
+            width: 100%;
+            padding: 8px;
+            box-sizing: border-box;
+        }
+
+        button {
+            background-color: #007bff;
+            color: #fff;
+            padding: 10px;
+            cursor: pointer;
+            border: none;
+            width: 100%;
+        }
+
+        button:hover {
+            background-color: #0056b3;
+        }
+        
+        /* header css */
+        .blog-header {
+            display: flex;
+            text-align: center;
+            flex-wrap: wrap;
+            justify-content: space-around;
+            align-items: center;
+            background-color: #333;
+            padding: 20px 10px;
+            text-align: center;
+            color: white;
+        }
+
+        .site-title {
+            margin: 0;
+            font-weight: bold;
+            font-size: 2em;
+            color: white;
+        }
+
+        .blog-subtitle {
+            margin: 10px 0;
+            font-size: 1.2em;
+        }
+
+        .blog-nav {
+            display: flex;
+            justify-content: center;
+            background-color: #444;
+            padding: 10px;
+        }
+
+        .nav-link {
+            color: white;
+            text-decoration: none;
+            margin: 0 15px;
+            font-weight: bold;
+        }
+
+        .nav-link:hover {
+            color: #ffd700;
+
+        }
+
+        .red {
+            color: red;
+        }
+
+        .search-bar {
+            text-align: center;
+            margin: 20px 0;
+        }
+
+        .search-input {
+            padding: 10px;
+            width: 300px;
+            font-size: 1em;
+            border: 1px solid #ccc;
+        }
+
+        .search-button {
+            padding: 10px;
+            background-color: #4caf50;
+            color: white;
+            border: none;
+            cursor: pointer;
+            font-size: 1em;
+        }
+
+        .search-button:hover {
+            background-color: #45a049;
+        }
+
+        .middle {
+            display: inline-block;
+        }
+
+        .hub {
+            color: black;
+            background-color: orange;
+            border-radius: 2px;
+            padding: 2px;
+        }
+
+        .logSign {
+            color: orange;
+            font-size: min(2em, 5vw);
+            width: fit-content;
+            cursor: pointer;
+        }
+    </style>
+</head>
+
+<body>
+    <header class="blog-header">
+        <div class="site-title"><b class="hub">Virtual</b> Auction</div>
+        <div class="blog-subtitle">Discover Unique Items</div>
+        <div class="logSign" onclick="window.location.href='/signup'">Signup</div>
+    </header>
+
+    <nav class="blog-nav">
+        <a href="#" class="nav-link" onclick="window.location.href='/'">Home</a>
+        <a href="#" class="nav-link" onclick="window.location.href='/about'">About</a>
+        <a href="#" class="nav-link" onclick="window.location.href='/contact'">Contact</a>
+    </nav>
+
+    <div class="container">
+        <h2>Login</h2>
+
+        <form id="loginForm">
+            <label for="email">Email:</label>
+            <input type="email" id="email" name="email" required>
+
+            <label for="password">Password:</label>
+            <input type="password" id="password" name="password" required>
+
+            <button type="submit" id="submit">Login</button>
+            <p>Don't have an account? <a href="/signup">Signup Now</a></p>
+        </form>
+    </div>
+
+    <script>
+        document.getElementById("loginForm").addEventListener("submit", function (e) {
+            e.preventDefault();
+            const email = document.getElementById("email").value;
+            const password = document.getElementById("password").value;
+            const postData = { email, password };
+
+            fetch('/login', {
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'application/json'
+                },
+                body: JSON.stringify(postData)
+            })
+                .then(response => response.json())
+                .then(data => {
+                    if (data.status === 'success') {
+                        localStorage.setItem("email", email);
+                        localStorage.setItem("user", data.username);
+                        window.location.href = '/';
+                    } else {
+                        alert("Login failed. Please check your email or password.");
+                    }
+                })
+                .catch(error => {
+                    console.error('Error:', error);
+                    alert("An error occurred. Please try again later.");
+                });
+        });
+    </script>
+
+</body>
+
+</html>

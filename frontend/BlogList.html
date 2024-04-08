@@ -1,0 +1,250 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Auction Dashboard</title>
+    <style>
+        body {
+            font-family: 'Arial', sans-serif;
+            margin: 0;
+            padding: 0;
+            background-color: #f4f4f4;
+        }
+
+        .container {
+            max-width: min(800px, 80vw);
+            margin: 20px auto;
+            padding: 20px;
+            box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
+        }
+
+        .auction-item {
+            background-color: #fff;
+            margin-bottom: 20px;
+            padding: 10px;
+            border-radius: 10px;
+            box-shadow: 0 2px 5px rgba(0, 0, 0, 0.1);
+            display: flex;
+            justify-content: space-between;
+            /* Align content to the left and right */
+            align-items: center;
+            /* Center items vertically */
+        }
+
+        .auction-item img {
+            max-width: 200px;
+            height: auto;
+            border-radius: 5px;
+            margin-right: 20px;
+        }
+
+        .auction-item-info {
+            padding: 10px;
+            text-align: right;
+            /* Align text to the right */
+        }
+
+        .auction-item-name {
+            font-size: 1.2em;
+            font-weight: bold;
+            margin-bottom: 5px;
+        }
+
+        .auction-item-date {
+            font-size: 0.9em;
+            color: #666;
+            margin-bottom: 5px;
+        }
+
+        .auction-item-bid {
+            font-size: 1em;
+            color: #007bff;
+            margin-bottom: 5px;
+        }
+
+        /* Styles for header */
+        .blog-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            background-color: #333;
+            padding: 20px 10px;
+            color: white;
+        }
+
+        .site-title {
+            font-weight: bold;
+            font-size: 2em;
+        }
+        .hub {
+            color: black;
+            background-color: orange;
+            border-radius: 2px;
+            padding: 2px;
+        }
+
+
+        .blog-subtitle {
+            font-size: 1.2em;
+            margin: 10px 0;
+        }
+
+        .user {
+            display: flex;
+            align-items: center;
+        }
+
+        .user img {
+            width: 50px;
+            border-radius: 50%;
+            margin-right: 10px;
+        }
+
+        /* Styles for navigation */
+        .blog-nav {
+            display: flex;
+            justify-content: center;
+            background-color: #444;
+            padding: 10px;
+        }
+
+        .nav-link {
+            color: white;
+            text-decoration: none;
+            margin: 0 15px;
+            font-weight: bold;
+        }
+
+        .nav-link:hover {
+            color: #ffd700;
+        }
+
+        .red {
+            color: red;
+        }
+    </style>
+</head>
+
+<body>
+    <header class="blog-header">
+        <div class="site-title"><b class="hub">Virtual</b> Auction</div>
+        <div class="blog-subtitle">Discover Unique Items</div>
+        <div class="user">
+            <img src="https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcTlvcJSJgrLlqVEQ1XNM3GzT0qGSyBX5jg1nd5Xn7_krVmMVL3gXR5u6TaU1q8xS4FNV6k&usqp=CAU"
+                alt="Profile Picture">
+            <p id="user">Not Logged In</p>
+        </div>
+        <div class="logSign" onclick="log()">Log Out</div>
+    </header>
+
+    <nav class="blog-nav">
+        <a class="nav-link" onclick="window.location.href='/'">Home</a>
+        <a class="nav-link" onclick="window.location.href='/createPost'">Create Auction Entry</a>
+        <a class="nav-link" onclick="window.location.href='/about'">About</a>
+        <a class="nav-link" onclick="window.location.href='/contact'">Contact</a>
+        <a class="nav-link red logout" onclick="log()">Log Out</a>
+    </nav>
+    <div class="container">
+        <h2>Items for Auction</h2>
+
+        <div id="auctionItems"></div>
+    </div>
+
+    <script>
+        document.addEventListener('DOMContentLoaded', function () {
+            renderAuctionItems();
+            readuser();
+        });
+        
+        function log() {
+            if (localStorage.getItem("user")) {
+                localStorage.removeItem('mail');
+                localStorage.removeItem('user');
+                window.location.href = '/login';
+            } else {
+                window.location.href = '/login';
+            }
+        }
+
+        function readuser() {
+            const username = localStorage.getItem("user");
+
+            if (username) {
+                document.querySelector(".user").style.display = "flex";
+                document.getElementById("user").innerText = username;
+            } else {
+                // document.querySelector(".logSign").style.display = "block";
+                // document.querySelector(".logout").innerText = "Log In";
+                // document.querySelector(".logSign").innerText = "Log In";
+                alert('User Not Logged In Please Log In First');
+                window.location.href = '/login';
+            }
+        }
+
+        async function fetchAuctionItems() {
+            try {
+                const response = await fetch('/auctionitems');
+                const data = await response.json();
+                console.log(data);
+                return data;
+            } catch (error) {
+                console.error('Error fetching auction items:', error);
+                return [];
+            }
+        }
+
+        async function renderAuctionItems() {
+            const auctionItemsElement = document.getElementById('auctionItems');
+            auctionItemsElement.innerHTML = ""; // Clear previous items
+
+            const auctionItems = await fetchAuctionItems();
+
+            if (auctionItems && auctionItems.length > 0) {
+                auctionItems.forEach(item => {
+                    const itemElement = document.createElement('div');
+                    itemElement.classList.add('auction-item');
+                    itemElement.id = item._id.toString()
+                    itemElement.onclick = function () {
+                        window.location.href = "/displayBlog?id=" + this.id;
+                    };
+
+                    const imageElement = document.createElement('img');
+                    imageElement.src = item.imageUrl;
+
+                    const infoElement = document.createElement('div');
+                    infoElement.classList.add('auction-item-info');
+
+                    const nameElement = document.createElement('div');
+                    nameElement.classList.add('auction-item-name');
+                    nameElement.textContent = item.Title;
+
+                    const dateElement = document.createElement('div');
+                    dateElement.classList.add('auction-item-date');
+                    dateElement.textContent = `Ends: ${item.lastDate}`;
+
+                    const bidElement = document.createElement('div');
+                    bidElement.classList.add('auction-item-bid');
+                    bidElement.textContent = `Current Highest Bid: ₹${item.highestBid}`;
+
+                    infoElement.appendChild(nameElement);
+                    infoElement.appendChild(dateElement);
+                    infoElement.appendChild(bidElement);
+
+                    itemElement.appendChild(imageElement);
+                    itemElement.appendChild(infoElement);
+
+                    auctionItemsElement.appendChild(itemElement);
+                });
+            } else {
+                const noItemsElement = document.createElement('p');
+                noItemsElement.textContent = 'No items available for auction.';
+                auctionItemsElement.appendChild(noItemsElement);
+            }
+        }
+    </script>
+
+</body>
+
+</html>

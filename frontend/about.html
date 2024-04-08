@@ -1,0 +1,215 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>About Me - Virtual Auction</title>
+    <style>
+        body {
+            font-family: 'Arial', sans-serif;
+            margin: 0;
+            padding: 0;
+            background-color: #f4f4f4;
+            color: #333;
+        }
+
+        main {
+            max-width: 800px;
+            margin: 20px auto;
+            background-color: #fff;
+            padding: 20px;
+            box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
+        }
+
+        h1 {
+            color: #007bff;
+        }
+
+        p {
+            line-height: 1.6;
+        }
+
+        section {
+            margin-bottom: 20px;
+        }
+
+        footer {
+            text-align: center;
+            padding: 10px;
+            background-color: #333;
+            color: #fff;
+            width: 100%;
+        }
+
+
+
+        /* header css */
+        .blog-header {
+            display: flex;
+            text-align: center;
+            flex-wrap: wrap;
+            justify-content: space-around;
+            align-items: center;
+            background-color: #333;
+            padding: 20px 10px;
+            text-align: center;
+            color: white;
+        }
+
+        .site-title {
+            margin: 0;
+            font-weight: bold;
+            font-size: 2em;
+            color: white;
+        }
+
+        .blog-subtitle {
+            margin: 10px 0;
+            font-size: 1.2em;
+        }
+
+        .blog-nav {
+            display: flex;
+            justify-content: center;
+            background-color: #444;
+            padding: 10px;
+        }
+
+        .nav-link {
+            color: white;
+            text-decoration: none;
+            margin: 0 15px;
+            font-weight: bold;
+        }
+
+        .nav-link:hover {
+            color: #ffd700;
+
+        }
+
+        .red {
+            color: red;
+        }
+
+
+        .middle {
+            display: inline-block;
+        }
+
+        .hub {
+            color: black;
+            background-color: orange;
+            border-radius: 2px;
+            padding: 2px;
+        }
+
+        .logSign {
+            display: none;
+            color: orange;
+            font-size: min(2em, 5vw);
+            width: fit-content;
+            cursor: pointer;
+        }
+
+        #profileimg {
+            width: 50px;
+        }
+
+        .user {
+            display: none;
+            align-items: center;
+            color: orange;
+            font-size: min(2em, 5vw);
+            cursor: pointer;
+        }
+    </style>
+</head>
+
+<body>
+    <header class="blog-header">
+        <div class="site-title"><b class="hub">Virtual</b> Auction</div>
+        <div class="blog-subtitle">Discover Unique Items</div>
+        <div class="user">
+            <img src="https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcTlvcJSJgrLlqVEQ1XNM3GzT0qGSyBX5jg1nd5Xn7_krVmMVL3gXR5u6TaU1q8xS4FNV6k&usqp=CAU"
+                alt="Profile Picture">
+            <p id="user">Prashant Shinde</p>
+        </div>
+        <div class="logSign" onclick="log()">Log Out</div>
+    </header>
+
+    <nav class="blog-nav">
+        <a class="nav-link" onclick="window.location.href='/'">Home</a>
+        <a class="nav-link" onclick="window.location.href='/createPost'">Create Auction Entry</a>
+        <a class="nav-link" onclick="window.location.href='/'">About</a>
+        <a class="nav-link" onclick="window.location.href='/contact'">Contact</a>
+        <a class="nav-link red logout" onclick="log()">Log Out</a>
+    </nav>
+    <main>
+        <h1>About Me - Virtual Auction</h1>
+        <section>
+            <h2>Welcome!</h2>
+            <p>Hello, I'm a Master's student in Computer Science. I'm thrilled to share my Auction Project
+                with you,
+                developed as part of my academic journey.</p>
+        </section>
+
+        <section>
+            <h2>Why This Auction App?</h2>
+            <p>This auction app is a result of my passion for creating innovative solutions in the field of online
+                auctions. It serves as a platform for users to discover unique items, engage in bidding, and experience
+                the thrill of auctions from the comfort of their homes. As a developer and enthusiast in e-commerce
+                technologies, I aim to provide a seamless and exciting auction experience for users, combining
+                technology with the excitement of bidding.</p>
+
+        </section>
+
+        <section>
+            <h2>What to Expect from Our Auction Platform</h2>
+            <p>Explore a variety of auctions featuring unique items, from collectibles to rare artifacts. Our platform
+                offers an immersive bidding experience where you can engage with fellow enthusiasts, discover new
+                treasures, and participate in exciting auctions. Whether you're a seasoned collector or a curious
+                newcomer, there's something for everyone to enjoy.</p>
+
+        </section>
+
+        <section>
+            <h2>Stay Connected</h2>
+<p>I'm always eager to connect with you! Whether you have questions, feedback, or just want to say hello, don't hesitate to reach out. You can find me on social media, listed in the contact section, or leave a comment on any of the blog posts. Let's build a vibrant community together!</p>
+
+        </section>
+    </main>
+
+    <footer>
+        &copy; 2024 Virtual Auction
+    </footer>
+    <script>
+        document.addEventListener("DOMContentLoaded", () => {
+            readuser();
+        })
+        function log() {
+            if (localStorage.getItem("user")) {
+                localStorage.removeItem('mail');
+                localStorage.removeItem('user');
+                window.location.href = '/login'
+            } else {
+                window.location.href = '/login'
+            }
+        }
+        function readuser() {
+            const username = localStorage.getItem("user");
+
+            if (username) {
+                document.querySelector(".user").style.display = "flex";
+                document.getElementById("user").innerText = localStorage.getItem("user");
+
+            } else {
+                document.querySelector(".logSign").style.display = "block";
+                document.querySelector(".logout").innerText = "Log In";
+            }
+        }
+
+    </script>
+</body>
+
+</html>
